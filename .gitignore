@@ -1,0 +1,12 @@
+/vendor/
+/.env.local
+/.env.local.php
+/.env.*.local
+/var/
+/public/bundles/
+###> symfony/web-server-bundle ###
+/public/index.php
+###< symfony/web-server-bundle ###
+.idea/
+.vscode/
+*.log

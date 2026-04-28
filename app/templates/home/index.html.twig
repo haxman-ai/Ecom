@@ -1,0 +1,53 @@
+
+
+{% extends 'base.html.twig' %}
+{% block title %}Accueil - Esprit Déco{% endblock %}
+
+{% block stylesheets %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap');
+
+    .hero-header {
+        background-image: url('/images/header.webp');
+        background-size: cover;
+        background-position: center;
+        min-height: max(40vh, 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: 'Poppins', sans-serif;
+        position: relative;
+    }
+
+    .hero-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+    }
+
+    .hero-header .hero-content {
+        position: relative;
+        z-index: 1;
+        color: white;
+    }
+
+    .hero-header h1 {
+        font-size: clamp(2rem, 6vw, 4rem);
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+
+    .hero-header p {
+        font-size: clamp(1rem, 2.5vw, 1.5rem);
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+
+
+{% endblock %}
