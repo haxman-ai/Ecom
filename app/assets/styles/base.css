@@ -1,0 +1,71 @@
+            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap');
+
+            body {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .hero-header {
+                min-height: 40vh;
+                background: url('{{ asset("images/header.webp") }}') center/cover no-repeat;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                position: relative;
+                font-family: 'Poppins', sans-serif;
+            }
+
+            .hero-header::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.45);
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 2;
+            }
+
+            .hero-title {
+                font-size: clamp(2rem, 6vw, 4rem);
+                font-weight: 700;
+            }
+
+            .title-blue {
+                color: #178DD4;
+            }
+
+            .title-orange {
+                color: #D85A30;
+            }
+
+            .hero-content .lead {
+                color: #000;
+            }
+
+            main {
+                flex-grow: 1;
+            }
+
+            .navbar.bg-light,
+            footer.bg-light {
+                background-color: #f8f9fa !important;
+                color: #212529 !important;
+            }
+
+            .navbar.bg-light .nav-link,
+            .navbar.bg-light .navbar-brand,
+            footer.bg-light,
+            footer.bg-light a {
+                color: #212529 !important;
+            }
+
+            @media (max-width: 576px) {
+                .hero-title span {
+                    display: block;
+                }
+            }
+

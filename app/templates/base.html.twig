@@ -1,116 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Esprit Déco{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="UTF-8">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/superhero/bootstrap.min.css" rel="stylesheet">
+        <title>{% block title %}Esprit Déco{% endblock %}</title>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/superhero/bootstrap.min.css" rel="stylesheet">
 
-        .hero-header {
-            min-height: 40vh;
-            background: url('{{ asset("images/header.webp") }}') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            font-family: 'Poppins', sans-serif;
-        }
+        {% block stylesheets %}{% endblock %}
+    </head>
 
-        .hero-header::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.45);
-        }
+    <body>
+        {% include '_shared/_header.html.twig' %}
+        {% include '_shared/_nav.html.twig' %}
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
+        <main class="container py-5">
+            {% block body %}{% endblock %}
+        </main>
 
-        .hero-title {
-            font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 700;
-        }
+        {% include '_shared/_footer.html.twig' %}
 
-        main {
-            flex-grow: 1;
-        }
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        @media (max-width: 576px) {
-            .hero-title span {
-                display: block;
-            }
-        }
-    </style>
-
-    {% block stylesheets %}{% endblock %}
-</head>
-<body>
-
-<header class="hero-header">
-    <div class="hero-content">
-        <h1 class="hero-title"><span>Esprit</span> <span>Déco</span></h1>
-        <p class="lead">Beau chez soi, Bien chez soi !</p>
-    </div>
-</header>
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="{{ path('app_home') }}">Esprit Déco</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_home') }}">Boutique</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Connexion</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Connexion</a></li>
-                        <li><a class="dropdown-item" href="#">Enregistrement</a></li>
-                    </ul>
-                </li>
-            </ul>
-
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Rechercher">
-                <button class="btn btn-outline-primary" type="submit">Rechercher</button>
-            </form>
-        </div>
-    </div>
-</nav>
-
-<main class="container py-5">
-    {% block body %}{% endblock %}
-</main>
-
-<footer class="bg-light border-top py-4 mt-auto text-center">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4"><a href="/cgv.pdf" class="text-muted">CGV</a></div>
-            <div class="col-md-4 fw-bold">Esprit Déco</div>
-            <div class="col-md-4">&copy; {{ "now"|date("Y") }}</div>
-        </div>
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-{% block javascripts %}{% endblock %}
-</body>
+        {% block javascripts %}{% endblock %}
+    </body>
 </html>

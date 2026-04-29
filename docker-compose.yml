@@ -2,7 +2,7 @@ services:
   
   php:
     build: ./docker/php
-    container_name: symfony_php
+    container_name: ecom_php
     volumes:
       - ./app:/var/www/html
     depends_on:
