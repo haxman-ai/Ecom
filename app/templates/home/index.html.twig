@@ -47,8 +47,37 @@
 {% endblock %}
 
 {% block body %}
-
-
-
-
+ 
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    {% for product in products %}
+    <div class="col">
+     <div class="card h-100">
+     {% if product.images is empty %}
+<div style="height: 200px; display: flex; align-items: center; justify-content: center; font-size: 5rem;">
+    🚫
+</div>
+{% else %}
+{% endif %}
+    {% for image in product.images %}
+    {% if image.isPrincipal %}
+    <img src="{{asset(image.path)}}" alt="{{image.alt}} "class="card-img-top" style="height: 200px; object-fit: cover;">
+    {% endif %}
+    {% endfor %}
+            <div class="card-body">
+            <div class="card-title text-center">
+            <a href="{{ path('app_product', {id:product.id})}}">
+            {{product.title}}
+             </a> 
+         </div>
+            {{product.description|split(' ')|slice(0,20)|join(' ')~'...'}}
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-2">
+             <span>{{product.category.name}}</span>   
+             <span class="badge bg-primary">{{product.price}}€</span>                   
+              </div>
+        
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

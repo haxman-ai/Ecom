@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProductController!{% endblock %}
+
+{% block body %}
+
+<div class="card p-4">
+    <h2 class="text-center">{{ product.title }}</h2>
+    <hr style="width: 50%; margin: auto;">
+    <p class="text-center">{{ product.category.name }}</p>
+</div>
+
+ 
+{% endblock %}
