@@ -1,12 +1,28 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Hello ProductController!{% endblock %}
-
 {% block body %}
-
 <div class="card p-4">
     <h2 class="text-center">{{ product.title }}</h2>
     <hr style="width: 50%; margin: auto;">
     <p class="text-center">{{ product.category.name }}</p>
+</div>
+
+<div id="carouselProduit" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for image in product.images %}
+    <div class="carousel-item {{ loop.first ? 'active' : '' }}">
+      <img class="d-block mx-auto" src="{{ asset(image.path) }}" alt="{{ image.alt }}" style="height: 200px; object-fit: cover;">
+    </div>
+    {% endfor %}
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselProduit" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Précédent</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselProduit" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Suivant</span>
+  </button>
 </div>
 {% endblock %}
