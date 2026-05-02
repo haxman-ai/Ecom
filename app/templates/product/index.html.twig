@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %}Hello ProductController!{% endblock %}
+{% block title %}{{product.title}}{% endblock %}
 {% block body %}
 <div class="card p-4">
     <h2 class="text-center">{{ product.title }}</h2>
     <hr style="width: 50%; margin: auto;">
     <p class="text-center">{{ product.category.name }}</p>
 </div>
+
 
 <div id="carouselProduit" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
@@ -25,4 +26,20 @@
     <span class="visually-hidden">Suivant</span>
   </button>
 </div>
+<p class="mt-3 text-center">{{product.description}}</p>
+<div class="card p-3 mt-4 mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-center gap-5 justify-content-center gap-3">
+        
+        {# Prix dans un badge #}
+        <span class="badge bg-primary fs-6 rounded-pill">{{ product.price }} €</span>
+
+        {# Bouton panier : gris avec bordure orange #}
+        <button type="button" class="btn rounded-pill" 
+                style="background-color: grey; border: 2px solid orange; color: white;">
+            Ajouter au panier
+        </button>
+
+    </div>
+</div>
+
 {% endblock %}
