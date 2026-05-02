@@ -1,12 +1,8 @@
-
-
 {% extends 'base.html.twig' %}
 {% block title %}Accueil - Esprit Déco{% endblock %}
-
 {% block stylesheets %}
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap');
-
     .hero-header {
         background-image: url('/images/header.webp');
         background-size: cover;
@@ -19,65 +15,69 @@
         font-family: 'Poppins', sans-serif;
         position: relative;
     }
-
     .hero-header::before {
         content: '';
         position: absolute;
         inset: 0;
         background: rgba(0, 0, 0, 0.45);
     }
-
     .hero-header .hero-content {
         position: relative;
         z-index: 1;
         color: white;
     }
-
     .hero-header h1 {
         font-size: clamp(2rem, 6vw, 4rem);
         font-weight: 700;
         letter-spacing: 2px;
     }
-
     .hero-header p {
         font-size: clamp(1rem, 2.5vw, 1.5rem);
         font-style: italic;
     }
 </style>
 {% endblock %}
-
 {% block body %}
- 
+
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
     {% for product in products %}
     <div class="col">
-     <div class="card h-100">
-     {% if product.images is empty %}
-<div style="height: 200px; display: flex; align-items: center; justify-content: center; font-size: 5rem;">
-    🚫
-</div>
-{% else %}
-{% endif %}
-    {% for image in product.images %}
-    {% if image.isPrincipal %}
-    <img src="{{asset(image.path)}}" alt="{{image.alt}} "class="card-img-top" style="height: 200px; object-fit: cover;">
-    {% endif %}
-    {% endfor %}
+        <div class="card h-100">
+
+            {# Chercher l'image principale #}
+            {% set principalImage = null %}
+            {% for image in product.images %}
+                {% if image.isPrincipal %}
+                    {% set principalImage = image %}
+                {% endif %}
+            {% endfor %}
+
+            {# Afficher image ou emoji #}
+            {% if principalImage %}
+                <img src="{{ asset(principalImage.path) }}" alt="{{ principalImage.alt }}"
+                     class="card-img-top" style="height: 200px; object-fit: cover;">
+            {% else %}
+                <div style="height: 200px; display: flex; align-items: center; 
+                            justify-content: center; font-size: 5rem;">
+                    🚫
+                </div>
+            {% endif %}
+
             <div class="card-body">
-            <div class="card-title text-center">
-            <a href="{{ path('app_product', {id:product.id})}}">
-            {{product.title}}
-             </a> 
-         </div>
-            {{product.description|split(' ')|slice(0,20)|join(' ')~'...'}}
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-2">
-             <span>{{product.category.name}}</span>   
-             <span class="badge bg-primary">{{product.price}}€</span>                   
-              </div>
-        
+                <div class="card-title text-center">
+                    <a href="{{ path('app_product', {id: product.id}) }}">
+                        {{ product.title }}
+                    </a>
+                </div>
+                {{ product.description|split(' ')|slice(0, 20)|join(' ') ~ '...' }}
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-2">
+                    <span>{{ product.category.name }}</span>
+                    <span class="badge bg-primary">{{ product.price }}€</span>
+                </div>
             </div>
+
         </div>
-    </div> 
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
