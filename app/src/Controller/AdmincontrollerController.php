@@ -32,13 +32,6 @@ final class AdmincontrollerController extends AbstractController
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($product);
-            $em->flush();
-
-            return $this->redirectToRoute('app_admin_index');
-        }
-
         return $this->render('admincontroller/new.html.twig', [
             'form' => $form,
         ]);
