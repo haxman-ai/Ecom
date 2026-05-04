@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace administrateur{% endblock %}
+
+{% block body %}
+  <div class="container mt-4">
+    <h1 class="text-center mb-4">Espace administrateur</h1>
+    <a href="{{ path('app_admin_new') }}" class="btn btn-success mb-3">+ Nouveau produit</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th><th>Titre</th><th>Prix</th><th>Catégorie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.title }}</td>
+                <td>{{ product.price }} €</td>
+                <td>{{ product.category.name }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">Aucun produit trouvé.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+{% endblock %}
