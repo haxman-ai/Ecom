@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Product;
-use App\Repository\ProductRepository;
 use App\Form\ProductType;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ final class AdmincontrollerController extends AbstractController
     public function index(ProductRepository $productRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $products = $productRepository->findAll();
 
         return $this->render('admincontroller/index.html.twig', [
@@ -32,8 +34,27 @@ final class AdmincontrollerController extends AbstractController
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($product);
+            $em->flush();
+
+            return $this->redirectToRoute('app_admin_index');
+        }
+
         return $this->render('admincontroller/new.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/admin/products', name: 'app_admin_list')]
+    public function list(ProductRepository $productRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $products = $productRepository->findAll();
+
+        return $this->render('admincontroller/list.html.twig', [
+            'products' => $products,
         ]);
     }
 }
