@@ -1,14 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap');
+
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
+main {
+    flex-grow: 1;
+}
+
+/* ── Hero ── */
 .hero-header {
+    background-image: url('/images/header.webp');
+    background-size: cover;
+    background-position: center;
     min-height: 40vh;
-    background: url('/images/header.webp') center/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,7 +25,7 @@ body {
 }
 
 .hero-header::before {
-    content: "";
+    content: '';
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
@@ -36,13 +43,8 @@ body {
     letter-spacing: 2px;
 }
 
-.title-blue {
-    color: #178DD4;
-}
-
-.title-orange {
-    color: #D85A30;
-}
+.title-blue   { color: #178DD4; }
+.title-orange { color: #D85A30; }
 
 .hero-content .lead {
     color: white;
@@ -50,10 +52,7 @@ body {
     font-style: italic;
 }
 
-main {
-    flex-grow: 1;
-}
-
+/* ── Navbar / Footer ── */
 .navbar.bg-light,
 footer.bg-light {
     background-color: #f8f9fa !important;
@@ -67,43 +66,9 @@ footer.bg-light a {
     color: #212529 !important;
 }
 
+/* ── Mobile ── */
 @media (max-width: 576px) {
     .hero-title span {
         display: block;
     }
-
-.hero-header {
-    background-image: url('/images/header.webp');
-    background-size: cover;
-    background-position: center;
-    min-height: max(40vh, 100px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    position: relative;
-}
-.hero-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-}
-.hero-header .hero-content {
-    position: relative;
-    z-index: 1;
-    color: white;
-}
-.hero-header h1 {
-    font-size: clamp(2rem, 6vw, 4rem);
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-.hero-header p {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    font-style: italic;
-} 
-
-
 }
