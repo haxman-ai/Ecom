@@ -39,7 +39,7 @@
                     <td>{{ product.price }} €</td>
                     <td>{{ product.category.name }}</td>
                     <td>
-                        <a href="#" class="btn btn-warning btn-sm">✏️</a>
+                        <a href="{{path('app_admin_edit',{id:product.id})}}" class="btn btn-warning btn-sm">✏️</a>
                     </td>
                     <td>
                         <a href="{{path('app_admin_delete',{id:product.id})}}" 
