@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
@@ -26,12 +25,15 @@ class Product
 
     #[ORM\Column]
     private ?float $price = null;
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'product')]
+
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'product', cascade: ['remove'], orphanRemoval: true)]
     private Collection $images;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
     }
+
     public function getImages(): Collection
     {
         return $this->images;
@@ -54,7 +56,6 @@ class Product
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -66,7 +67,6 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -78,7 +78,6 @@ class Product
     public function setPrice(float $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -90,7 +89,6 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 }
