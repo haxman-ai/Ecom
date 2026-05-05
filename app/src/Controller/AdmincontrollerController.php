@@ -17,7 +17,6 @@ final class AdmincontrollerController extends AbstractController
     public function index(ProductRepository $productRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         $products = $productRepository->findAll();
 
         return $this->render('admincontroller/index.html.twig', [
@@ -29,7 +28,6 @@ final class AdmincontrollerController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
@@ -50,11 +48,31 @@ final class AdmincontrollerController extends AbstractController
     public function list(ProductRepository $productRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         $products = $productRepository->findAll();
 
         return $this->render('admincontroller/list.html.twig', [
             'products' => $products,
         ]);
+    }
+
+    #[Route('/admin/{id}/delete', name: 'app_admin_delete')]
+    public function delete(Request $request, Product $product, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        foreach ($product->getImages() as $image) {
+            $filepath = $this->getParameter('kernel.project_dir') . '/public/' . strtolower($image->getPath());
+
+            if (file_exists($filepath)) {
+                unlink($filepath);
+            }
+        }
+
+        $em->remove($product);
+        $em->flush();
+
+        $this->addFlash('success', 'Le produit a bien été supprimé');
+
+        return $this->redirectToRoute('app_admin_list');
     }
 }
