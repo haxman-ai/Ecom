@@ -8,6 +8,8 @@ use App\Entity\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Image;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Positive;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -15,15 +17,19 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min:3)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Positive()]
     private ?float $price = null;
 
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'product', cascade: ['remove'], orphanRemoval: true)]
