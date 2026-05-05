@@ -13,34 +13,15 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AdmincontrollerController extends AbstractController
 {
-    #[Route('/admincontroller', name: 'app_admin_index')]
+    #[Route('/admin', name: 'app_admin_index')]
     public function index(ProductRepository $productRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $products = $productRepository->findAll();
 
-        return $this->render('admincontroller/index.html.twig', [
+        return $this->render('admin/index.html.twig', [
             'products' => $products,
-        ]);
-    }
-
-    #[Route('/admin/new', name: 'app_admin_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $product = new Product();
-        $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($product);
-            $em->flush();
-
-            return $this->redirectToRoute('app_admin_index');
-        }
-
-        return $this->render('admincontroller/new.html.twig', [
-            'form' => $form,
         ]);
     }
 
@@ -48,9 +29,10 @@ final class AdmincontrollerController extends AbstractController
     public function list(ProductRepository $productRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $products = $productRepository->findAll();
 
-        return $this->render('admincontroller/list.html.twig', [
+        return $this->render('admin/list.html.twig', [
             'products' => $products,
         ]);
     }
@@ -74,5 +56,40 @@ final class AdmincontrollerController extends AbstractController
         $this->addFlash('success', 'Le produit a bien été supprimé');
 
         return $this->redirectToRoute('app_admin_list');
+    }
+
+    #[Route('/admin/new', name: 'app_admin_new')]
+    #[Route('/admin/{id}/edit', name: 'app_admin_edit')]
+    public function form(
+        Request $request,
+        EntityManagerInterface $em,
+        ?Product $product = null
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $isEdit = $product !== null;
+
+        if (!$product) {
+            $product = new Product();
+        }
+
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$isEdit) {
+                $em->persist($product);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('app_admin_list');
+        }
+
+        return $this->render('admin/form.html.twig', [
+            'form' => $form,
+            'product' => $product,
+            'isEdit' => $isEdit,
+        ]);
     }
 }
