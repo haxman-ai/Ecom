@@ -1,14 +1,14 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Image;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -21,34 +21,35 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(min:3)]
+    #[NotBlank(message: 'Le titre est obligatoire')]
+    #[Length(min: 3, minMessage: 'Le titre doit contenir au moins {{ limit }} caractères')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank()]
+    #[NotBlank(message: 'La description est obligatoire')]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Positive()]
+    #[Positive(message: 'Le prix doit être positif')]
+
     private ?float $price = null;
 
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'product', cascade: ['remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(
+        targetEntity: Image::class,
+        mappedBy: 'product',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     private Collection $images;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     public function __construct()
     {
         $this->images = new ArrayCollection();
     }
-
-    public function getImages(): Collection
-    {
-        return $this->images;
-    }
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -63,6 +64,7 @@ class Product
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -74,6 +76,7 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -85,7 +88,13 @@ class Product
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
         return $this;
+    }
+
+    public function getImages(): Collection
+    {
+        return $this->images;
     }
 
     public function getCategory(): ?Category
@@ -96,6 +105,7 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
         return $this;
     }
 }

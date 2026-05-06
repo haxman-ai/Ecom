@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Image;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
@@ -13,34 +14,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AdmincontrollerController extends AbstractController
 {
-    #[Route('/admincontroller', name: 'app_admin_index')]
+    #[Route('/admin', name: 'app_admin_index')]
     public function index(ProductRepository $productRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $products = $productRepository->findAll();
 
-        return $this->render('admincontroller/index.html.twig', [
+        return $this->render('admin/index.html.twig', [
             'products' => $products,
-        ]);
-    }
-
-    #[Route('/admin/new', name: 'app_admin_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $product = new Product();
-        $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($product);
-            $em->flush();
-
-            return $this->redirectToRoute('app_admin_index');
-        }
-
-        return $this->render('admincontroller/new.html.twig', [
-            'form' => $form,
         ]);
     }
 
@@ -50,7 +31,7 @@ final class AdmincontrollerController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $products = $productRepository->findAll();
 
-        return $this->render('admincontroller/list.html.twig', [
+        return $this->render('admin/list.html.twig', [
             'products' => $products,
         ]);
     }
@@ -62,7 +43,6 @@ final class AdmincontrollerController extends AbstractController
 
         foreach ($product->getImages() as $image) {
             $filepath = $this->getParameter('kernel.project_dir') . '/public/' . strtolower($image->getPath());
-
             if (file_exists($filepath)) {
                 unlink($filepath);
             }
@@ -70,9 +50,84 @@ final class AdmincontrollerController extends AbstractController
 
         $em->remove($product);
         $em->flush();
-
         $this->addFlash('success', 'Le produit a bien été supprimé');
 
         return $this->redirectToRoute('app_admin_list');
+    }
+
+    #[Route('/admin/new', name: 'app_admin_new')]
+    #[Route('/admin/{id}/edit', name: 'app_admin_edit')]
+    public function form(
+        Request $request,
+        EntityManagerInterface $em,
+        ?Product $product = null
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $isEdit = $product !== null;
+
+        if (!$product) {
+            $product = new Product();
+        }
+
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$isEdit) {
+                $em->persist($product);
+            }
+
+            $file = $request->files->get('imageFile');
+            if ($file) {
+                $filename = uniqid() . '.' . $file->guessExtension();
+                $destination = $this->getParameter('kernel.project_dir') . '/public/images/product/';
+                $file->move($destination, $filename);
+
+                $image = new Image();
+                $image->setPath('images/product/' . $filename);
+                $image->setAlt('image produit');
+                $image->setIsPrincipal(false);
+                $image->setProduct($product);
+                $em->persist($image);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('app_admin_list');
+        }
+
+        return $this->render('admin/form.html.twig', [
+            'form' => $form,
+            'product' => $product,
+            'isEdit' => $isEdit,
+        ]);
+    }
+
+    #[Route('/admin/image/{id}/principal', name: 'app_image_principal')]
+    public function setImagePrincipal(Image $image, EntityManagerInterface $em): Response
+    {
+        foreach ($image->getProduct()->getImages() as $img) {
+            $img->setIsPrincipal(false);
+        }
+
+        $image->setIsPrincipal(true);
+        $em->flush();
+
+        return $this->redirectToRoute('app_admin_edit', ['id' => $image->getProduct()->getId()]);
+    }
+
+    #[Route('/admin/image/{id}/delete', name: 'app_image_delete')]
+    public function deleteImage(Image $image, EntityManagerInterface $em): Response
+    {
+        $filepath = $this->getParameter('kernel.project_dir') . '/public/' . $image->getPath();
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        }
+
+        $em->remove($image);
+        $em->flush();
+
+        return $this->redirectToRoute('app_admin_edit', ['id' => $image->getProduct()->getId()]);
     }
 }
