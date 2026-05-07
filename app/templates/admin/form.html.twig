@@ -16,6 +16,10 @@
             {{ isEdit ? 'Modifier' : 'Ajouter' }}
         </button>
         </div>
+        <div id="upload-container"class="d-flex flex-column gap-2">
+            <input type="file" name="imageFile[]" placeholder="text-input">
+        </div>
+         <button type="button" id="add-image">➕</button>
     {{ form_end(form) }}
 
 {% for image in product.images %}
