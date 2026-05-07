@@ -79,15 +79,17 @@ final class AdmincontrollerController extends AbstractController
             }
 
             $file = $request->files->get('imageFile');
-            if ($file) {
-                $filename = uniqid() . '.' . $file->guessExtension();
+            $isFirst = true;
+            foreach ($file as $img) {
+                $filename = uniqid() . '.' . $img->guessExtension();
                 $destination = $this->getParameter('kernel.project_dir') . '/public/images/product/';
-                $file->move($destination, $filename);
+                $img->move($destination, $filename);
 
                 $image = new Image();
                 $image->setPath('images/product/' . $filename);
                 $image->setAlt('image produit');
-                $image->setIsPrincipal(false);
+                $image->setIsPrincipal($isFirst);
+                $isFirst = false;
                 $image->setProduct($product);
                 $em->persist($image);
             }
