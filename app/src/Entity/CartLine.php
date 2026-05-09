@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\CartLineRepository;
@@ -18,11 +17,11 @@ class CartLine
 
     #[ORM\ManyToOne(inversedBy: 'cartLines')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?cart $cart = null;
+    private ?Cart $cart = null;          // ✅ Cart avec C majuscule
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?product $product = null;
+    private ?Product $product = null;    // ✅ Product avec P majuscule
 
     public function getId(): ?int
     {
@@ -37,31 +36,28 @@ class CartLine
     public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
-
         return $this;
     }
 
-    public function getCart(): ?cart
+    public function getCart(): ?Cart       // ✅
     {
         return $this->cart;
     }
 
-    public function setCart(?cart $cart): static
+    public function setCart(?Cart $cart): static   // ✅
     {
         $this->cart = $cart;
-
         return $this;
     }
 
-    public function getProduct(): ?product
+    public function getProduct(): ?Product   // ✅
     {
         return $this->product;
     }
 
-    public function setProduct(?product $product): static
+    public function setProduct(?Product $product): static   // ✅
     {
         $this->product = $product;
-
         return $this;
     }
 }
