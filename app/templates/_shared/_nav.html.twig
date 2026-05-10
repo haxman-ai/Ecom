@@ -39,7 +39,7 @@
             </form>
            {% set cartCount = app.session.get('cart', [])
             |reduce((carry, qty) => carry + qty, 0) %}
-            <a href="#" class="ms-3" data-bs-toggle="offcanvas" data-bs-target="#cartPanel">
+            <a href="#offcanvas" class="ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvas">
                 <i class="bi bi-cart3"></i>
                 {% if cartCount > 0 %}
                     <span class="badge bg-danger">{{ cartCount }}</span>
