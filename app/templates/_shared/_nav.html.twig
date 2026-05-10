@@ -37,6 +37,15 @@
                 <input class="form-control me-2" type="search" placeholder="Rechercher">
                 <button class="btn btn-outline-primary" type="submit">Rechercher</button>
             </form>
+           {% set cartCount = app.session.get('cart', [])
+            |reduce((carry, qty) => carry + qty, 0) %}
+            <a href="#offcanvas" class="ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvas">
+                <i class="bi bi-cart3"></i>
+                {% if cartCount > 0 %}
+                    <span class="badge bg-danger">{{ cartCount }}</span>
+                {% endif %}
+                🛒
+            </a>
         </div>
     </div>
 </nav>
