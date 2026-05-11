@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,74 +11,61 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CartController extends AbstractController
 {
     #[Route('/cart/add/{id}', name: 'cart_add')]
-    public function add(Product $product,Request $request): Response    
+    public function add(Product $product, Request $request): Response
     {
-       $session = $request->getsession();
-
-       $cart = $session->get('cart',[]);
-
-       $id = $product->getId();
-
-       if(isset($cart[$id])) {
-
-       $cart[$id]++;
-    
-       } else {
-
-        $cart[$id] = 1;
-
-       }
-
-       $session->set('cart', $cart);
-
-        return $this->redirectToRoute('app_product', ['id'=>$id
-        ]);
-    }
-
-
-    #[Route('/cart/decrease/{id}', name:'cart_decrease')]
-    public function decrease(Product $product,Request $request) : Response
-
-    {    $id = $product->getId();
-
         $session = $request->getSession();
+        $cart = $session->get('cart', []);
+        $id = $product->getId();
 
-        $cart = $session->get('cart',[]);
-
-        if($cart[$id]>1) {
-          $cart[$id]--;
+        if (isset($cart[$id])) {
+            $cart[$id]++;
         } else {
-          unset($cart[$id]);
+            $cart[$id] = 1;
         }
+
         $session->set('cart', $cart);
 
-        return $this->redirectToRoute('app_product',['id'=>$id]);
-
-
-
+        return $this->redirectToRoute('app_product', ['id' => $id]);
     }
 
-
-    #[Route('/cart/remove/{id}', name:'cart_remove')]
-    public function remove(Product $product,Request $request) : Response
-
+    #[Route('/cart/decrease/{id}', name: 'cart_decrease')]
+    public function decrease(Product $product, Request $request): Response
     {
-          $id = $product->getId();
+        $id = $product->getId();
+        $session = $request->getSession();
+        $cart = $session->get('cart', []);
 
-           $session = $request->getSession();
-           
-          $cart = $session->get('cart',[]);
+        if ($cart[$id] > 1) {
+            $cart[$id]--;
+        } else {
+            unset($cart[$id]);
+        }
 
-           unset($cart[$id]);
+        $session->set('cart', $cart);
 
-          $session->set('cart', $cart);
-
-          return $this->redirectToRoute('app_product',['id'=>$id]);
-
-
+        return $this->redirectToRoute('app_product', ['id' => $id]);
     }
 
+    #[Route('/cart/remove/{id}', name: 'cart_remove')]
+    public function remove(Product $product, Request $request): Response
+    {
+        $id = $product->getId();
+        $session = $request->getSession();
+        $cart = $session->get('cart', []);
 
-    #[Route('/cart/remove/{id}', name:'cart_clear')]
-    
+        unset($cart[$id]);
+
+        $session->set('cart', $cart);
+
+        return $this->redirectToRoute('app_product', ['id' => $id]);
+    }
+
+    #[Route('/cart/clear', name: 'cart_clear')]
+    public function clear(Request $request): Response
+    {
+        $session = $request->getSession();
+        $session->remove('cart');
+
+        return $this->redirectToRoute('app_home');
+    }
 }
