@@ -33,4 +33,51 @@ final class CartController extends AbstractController
         return $this->redirectToRoute('app_product', ['id'=>$id
         ]);
     }
+
+
+    #[Route('/cart/decrease/{id}', name:'cart_decrease')]
+    public function decrease(Product $product,Request $request) : Response
+
+    {    $id = $product->getId();
+
+        $session = $request->getSession();
+
+        $cart = $session->get('cart',[]);
+
+        if($cart[$id]>1) {
+          $cart[$id]--;
+        } else {
+          unset($cart[$id]);
+        }
+        $session->set('cart', $cart);
+
+        return $this->redirectToRoute('app_product',['id'=>$id]);
+
+
+
+    }
+
+
+    #[Route('/cart/remove/{id}', name:'cart_remove')]
+    public function remove(Product $product,Request $request) : Response
+
+    {
+          $id = $product->getId();
+
+           $session = $request->getSession();
+           
+          $cart = $session->get('cart',[]);
+
+           unset($cart[$id]);
+
+          $session->set('cart', $cart);
+
+          return $this->redirectToRoute('app_product',['id'=>$id]);
+
+
+    }
+
+
+    #[Route('/cart/remove/{id}', name:'cart_clear')]
+    
 }
