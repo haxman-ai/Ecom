@@ -1,4 +1,3 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}
@@ -8,32 +7,35 @@
 {% block body %}
     <h1>{{ isEdit ? 'Modifier un produit' : 'Ajouter un produit' }}</h1>
 
-   {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
         {{ form_widget(form) }}
         <input type="file" name="imageFile">
-         <div class="d-flex justify-content-end">
-        <button class="btn btn-primary ">
-            {{ isEdit ? 'Modifier' : 'Ajouter' }}
-        </button>
+
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary">
+                {{ isEdit ? 'Modifier' : 'Ajouter' }}
+            </button>
         </div>
-        <div id="upload-container"class="d-flex flex-column gap-2">
+
+        <div id="upload-container" class="d-flex flex-column gap-2">
             <input type="file" name="imageFile[]" placeholder="text-input">
         </div>
-         <button type="button" id="add-image">➕</button>
+
+        <button type="button" id="add-image">➕</button>
     {{ form_end(form) }}
 
-{% for image in product.images %}
-    <div class="d-inline-flex flex-column m-2" style="width: 100px">
-        {% if image.isPrincipal %}
-            <img src="{{ asset(image.path) }}" alt="{{ image.alt }}" class="img-fluid border border-warning">
-            <span class="badge bg-primary">principal</span>
-        {% else %}
-            <img src="{{ asset(image.path) }}" alt="{{ image.alt }}" class="img-fluid">
-            <div class="d-flex flex-row">
-            <a href="{{ path('app_image_principal', {id: image.id}) }}" class="btn btn-warning btn-sm">⭐</a>
-            <a href="{{ path('app_image_delete', {id: image.id}) }}" class="btn btn-danger btn-sm">❌</a>
-            </div>
-        {% endif %}
-    </div>
-{% endfor %}
+    {% for image in product.images %}
+        <div class="d-inline-flex flex-column m-2" style="width: 100px">
+            {% if image.isPrincipal %}
+                <img src="{{ asset(image.path) }}" alt="{{ image.alt }}" class="img-fluid border border-warning">
+                <span class="badge bg-primary">principal</span>
+            {% else %}
+                <img src="{{ asset(image.path) }}" alt="{{ image.alt }}" class="img-fluid">
+                <div class="d-flex flex-row">
+                    <a href="{{ path('app_image_principal', {id: image.id}) }}" class="btn btn-warning btn-sm">⭐</a>
+                    <a href="{{ path('app_image_delete', {id: image.id}) }}" class="btn btn-danger btn-sm">❌</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
 {% endblock %}

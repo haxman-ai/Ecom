@@ -1,26 +1,64 @@
-<div class="offcanvas offcanvas-end " tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasLabel">Mon panier</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    <table>
-  <thead>
-    <tr>
-      <th>Produit</th>
-      <th>Quantité</th>
-      <th>Prix</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in cartHandler.cart %}
-    <tr>
-      <td>{{item.product.title}}</td>
-      <td>{{item.quantity}}</td>
-      <td>{{item.product.price}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-  </div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasLabel">Mon panier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cartHandler.cart %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.product.price }}</td>
+                    <td>
+                        <button class="btn btn-primary rounded-pill btn-add" data-id="{{ item.product.id }}">+</button>
+                        <button class="btn btn-primary rounded-pill btn-decrease" data-id="{{ item.product.id }}">-</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-primary rounded-pill btn-clear">Vider le panier</button>
+        <script>
+            document.querySelectorAll('.btn-add').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    fetch('/cart/add/' + id)
+                        .then(() => location.reload());
+                });
+            });
+
+            document.querySelectorAll('.btn-decrease').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    fetch('/cart/decrease/' + id)
+                        .then(() => location.reload());
+                });
+            });
+
+            document.querySelectorAll('.btn-remove').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    fetch('/cart/remove/' + id)
+                        .then(() => location.reload());
+                });
+            });
+
+            document.querySelectorAll('.btn-clear').forEach(button => {
+                button.addEventListener('click', function() {
+                    fetch('/cart/clear/')
+                        .then(() => location.reload());
+                });
+            });
+        </script>
+    </div>
 </div>
