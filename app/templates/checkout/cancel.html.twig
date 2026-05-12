@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement annulé — Esprit Déco{% endblock %}
+
+{% block body %}
+<div class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="mb-4" style="font-size: 4rem;">❌</div>
+            <h2 class="mb-2">Paiement annulé</h2>
+            <p class="text-muted mb-4">
+                Votre paiement a été annulé. Votre commande #{{ order.id }} n'a pas été traitée.
+            </p>
+
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="{{ path('checkout_summary', {'id': order.id}) }}" class="btn btn-success">
+                    Réessayer le paiement
+                </a>
+                <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">
+                    Retour à la boutique
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
