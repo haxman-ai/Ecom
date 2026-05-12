@@ -24,11 +24,21 @@
                     {% endif %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        Connexion
+                        {% if app.user %}
+                            {{ app.user.email }}
+                        {% else %}
+                            Connexion
+                        {% endif %}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{path('app_login')}}">Connexion</a></li>
-                        <li><a class="dropdown-item" href="{{path('app_register')}}">Enregistrement</a></li>
+                        {% if app.user %}
+                            <li><span class="dropdown-item-text text-muted small">{{ app.user.email }}</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="{{path('app_login')}}">Connexion</a></li>
+                            <li><a class="dropdown-item" href="{{path('app_register')}}">Enregistrement</a></li>
+                        {% endif %}
                     </ul>
                 </li>
             </ul>
@@ -37,8 +47,7 @@
                 <input class="form-control me-2" type="search" placeholder="Rechercher">
                 <button class="btn btn-outline-primary" type="submit">Rechercher</button>
             </form>
-           {% set cartCount = app.session.get('cart', [])
-            |reduce((carry, qty) => carry + qty, 0) %}
+           {% set cartCount = cartHandler.cart|reduce((carry, item) => carry + item.quantity, 0) %}
             <a href="#offcanvas" class="ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvas">
                 <i class="bi bi-cart3"></i>
                 {% if cartCount > 0 %}
