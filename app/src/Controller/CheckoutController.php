@@ -3,12 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Address;
-use App\Entity\Order;
-use App\Entity\OrderLine;
 use App\Form\AddressType;
-use App\Repository\CartRepository;
 use App\Service\Carthandler;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\OrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,8 +18,7 @@ final class CheckoutController extends AbstractController
 {
     public function __construct(
         private Carthandler $cartHandler,
-        private CartRepository $cartRepository,
-        private EntityManagerInterface $em,
+        private OrderService $orderService,
     ) {}
 
     #[Route('/address', name: 'checkout_address')]
@@ -35,42 +31,15 @@ final class CheckoutController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        $address = new Address();
-        $form = $this->createForm(AddressType::class, $address);
+        $form = $this->createForm(AddressType::class, new Address());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-
-            $totalAmount = array_sum(array_map(
-                fn($item) => $item['product']->getPrice() * $item['quantity'],
+            $order = $this->orderService->createFromCart(
+                $this->getUser(),
+                $form->getData(),
                 $cartItems
-            ));
-
-            $order = new Order();
-            $order->setUser($user);
-            $order->setCreatedAt(new \DateTimeImmutable());
-            $order->setStatus('pending_payment');
-            $order->setTotalAmount($totalAmount);
-
-            foreach ($cartItems as $item) {
-                $line = new OrderLine();
-                $line->setProduct($item['product']);
-                $line->setQuantity($item['quantity']);
-                $line->setUnitPrice($item['product']->getPrice());
-                $order->addOrderLine($line);
-            }
-
-            $address->setMyOrder($order);
-            $this->em->persist($order);
-            $this->em->persist($address);
-
-            $cart = $this->cartRepository->findOneBy(['user' => $user, 'status' => 'open']);
-            if ($cart) {
-                $cart->setStatus('converted');
-            }
-
-            $this->em->flush();
+            );
 
             return $this->redirectToRoute('checkout_summary', ['id' => $order->getId()]);
         }
@@ -78,15 +47,12 @@ final class CheckoutController extends AbstractController
         return $this->render('checkout/address.html.twig', [
             'form' => $form,
             'cartItems' => $cartItems,
-            'total' => array_sum(array_map(
-                fn($item) => $item['product']->getPrice() * $item['quantity'],
-                $cartItems
-            )),
+            'total' => $this->orderService->computeTotal($cartItems),
         ]);
     }
 
     #[Route('/summary/{id}', name: 'checkout_summary')]
-    public function summary(Order $order): Response
+    public function summary(\App\Entity\Order $order): Response
     {
         if ($order->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
