@@ -29,10 +29,13 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private ?user $user = null;
 
+    #[ORM\OneToOne(mappedBy: 'myOrder', cascade: ['persist', 'remove'])]
+    private ?Address $address = null;
+
     /**
      * @var Collection<int, OrderLine>
      */
-    #[ORM\OneToMany(targetEntity: OrderLine::class, mappedBy: 'myOrder', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: OrderLine::class, mappedBy: 'myOrder', cascade: ['persist'], orphanRemoval: true)]
     private Collection $orderLines;
 
     public function __construct()
@@ -114,12 +117,25 @@ class Order
     public function removeOrderLine(OrderLine $orderLine): static
     {
         if ($this->orderLines->removeElement($orderLine)) {
-            // set the owning side to null (unless already changed)
             if ($orderLine->getMyOrder() === $this) {
                 $orderLine->setMyOrder(null);
             }
         }
 
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(Address $address): static
+    {
+        if ($address->getMyOrder() !== $this) {
+            $address->setMyOrder($this);
+        }
+        $this->address = $address;
         return $this;
     }
 }

@@ -27,7 +27,10 @@
                 {% endfor %}
             </tbody>
         </table>
-        <button class="btn btn-primary rounded-pill btn-clear">Vider le panier</button>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button class="btn btn-outline-danger rounded-pill btn-clear">Vider le panier</button>
+            <a href="{{ path('checkout_address') }}" class="btn btn-success rounded-pill">Payer</a>
+        </div>
         <script>
             document.querySelectorAll('.btn-add').forEach(button => {
                 button.addEventListener('click', function() {
