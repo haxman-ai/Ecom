@@ -21,7 +21,7 @@ class OrderLine
 
     #[ORM\ManyToOne(inversedBy: 'orderLines')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?order $myOrder = null;
+    private ?Order $myOrder = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -56,12 +56,12 @@ class OrderLine
         return $this;
     }
 
-    public function getMyOrder(): ?order
+    public function getMyOrder(): ?Order
     {
         return $this->myOrder;
     }
 
-    public function setMyOrder(?order $myOrder): static
+    public function setMyOrder(?Order $myOrder): static
     {
         $this->myOrder = $myOrder;
 

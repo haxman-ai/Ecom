@@ -58,6 +58,10 @@ final class CheckoutController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        if ($order->getStatus() !== 'pending_payment') {
+            throw $this->createNotFoundException('Cette commande n\'est plus accessible.');
+        }
+
         return $this->render('checkout/summary.html.twig', [
             'order' => $order,
         ]);
