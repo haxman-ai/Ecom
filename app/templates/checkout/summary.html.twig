@@ -47,7 +47,7 @@
                 <a href="{{ path('checkout_address') }}" class="btn btn-outline-secondary flex-fill">
                     Modifier l'adresse
                 </a>
-                <a href="#" class="btn btn-success flex-fill">
+                <a href="{{ path('checkout_payment', {'id': order.id}) }}" class="btn btn-success flex-fill">
                     Confirmer et payer
                 </a>
             </div>
