@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Récapitulatif de commande — Esprit Déco{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <h2 class="mb-4">Récapitulatif de votre commande</h2>
+
+            <div class="card mb-4">
+                <div class="card-header">Adresse de livraison</div>
+                <div class="card-body">
+                    <p class="mb-1">{{ order.address.fullname }}</p>
+                    <p class="mb-1">{{ order.address.street }}</p>
+                    <p class="mb-0">{{ order.address.zipCode }} {{ order.address.city }}</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Articles commandés</div>
+                <ul class="list-group list-group-flush">
+                    {% for line in order.orderLines %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ line.product.title }} × {{ line.quantity }}</span>
+                        <span>{{ (line.unitPrice * line.quantity)|number_format(2, ',', ' ') }} €</span>
+                    </li>
+                    {% endfor %}
+                    <li class="list-group-item d-flex justify-content-between fw-bold">
+                        <span>Total</span>
+                        <span>{{ order.totalAmount|number_format(2, ',', ' ') }} €</span>
+                    </li>
+                </ul>
+            </div>
+
+            <a href="#" class="btn btn-success w-100">Procéder au paiement</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

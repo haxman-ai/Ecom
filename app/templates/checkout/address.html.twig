@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adresse de livraison — Esprit Déco{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="mb-4">Adresse de livraison</h2>
+
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                <div class="mb-3">
+                    {{ form_label(form.fullname) }}
+                    {{ form_widget(form.fullname) }}
+                    {{ form_errors(form.fullname) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.street) }}
+                    {{ form_widget(form.street) }}
+                    {{ form_errors(form.street) }}
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        {{ form_label(form.zipCode) }}
+                        {{ form_widget(form.zipCode) }}
+                        {{ form_errors(form.zipCode) }}
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        {{ form_label(form.city) }}
+                        {{ form_widget(form.city) }}
+                        {{ form_errors(form.city) }}
+                    </div>
+                </div>
+
+                <hr>
+                <h5>Récapitulatif du panier</h5>
+                <ul class="list-group mb-3">
+                    {% for item in cartItems %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ item.product.title }} × {{ item.quantity }}</span>
+                        <span>{{ (item.product.price * item.quantity)|number_format(2, ',', ' ') }} €</span>
+                    </li>
+                    {% endfor %}
+                    <li class="list-group-item d-flex justify-content-between fw-bold">
+                        <span>Total</span>
+                        <span>{{ total|number_format(2, ',', ' ') }} €</span>
+                    </li>
+                </ul>
+
+                <button type="submit" class="btn btn-success w-100">Valider l'adresse</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
