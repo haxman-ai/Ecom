@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Administration{% endblock %} — Esprit Déco</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5/dist/superhero/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{{ path('app_admin_index') }}">
+            ⚙️ Administration
+        </a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.attributes.get('_route') starts with 'app_admin' %}active{% endif %}"
+                       href="{{ path('app_admin_list') }}">Produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.attributes.get('_route') starts with 'admin_category' %}active{% endif %}"
+                       href="{{ path('admin_category_index') }}">Catégories</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_home') }}">← Boutique</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="{{ path('app_logout') }}">Déconnexion</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container py-4">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% block body %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
