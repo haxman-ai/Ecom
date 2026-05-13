@@ -1,0 +1,70 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Commande #{{ order.id }} — Modifier le statut{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Commande #{{ order.id }}</h1>
+    <a href="{{ path('admin_order_index') }}" class="btn btn-outline-secondary btn-sm">← Retour</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Informations</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Client</span>
+                    <span>{{ order.user.email }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Date</span>
+                    <span>{{ order.createdAt|date('d/m/Y à H:i') }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Total</span>
+                    <span class="fw-bold">{{ order.totalAmount|number_format(2, ',', ' ') }} €</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header fw-semibold">Modifier le statut</div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header fw-semibold">Articles commandés</div>
+            <ul class="list-group list-group-flush">
+                {% for line in order.orderLines %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-medium">{{ line.product ? line.product.title : 'Produit supprimé' }}</span>
+                        <small class="text-muted ms-2">{{ line.unitPrice|number_format(2, ',', ' ') }} € / unité</small>
+                    </div>
+                    <div>
+                        <span class="badge bg-secondary me-2">× {{ line.quantity }}</span>
+                        <span>{{ (line.unitPrice * line.quantity)|number_format(2, ',', ' ') }} €</span>
+                    </div>
+                </li>
+                {% endfor %}
+                <li class="list-group-item d-flex justify-content-between fw-bold">
+                    <span>Total</span>
+                    <span>{{ order.totalAmount|number_format(2, ',', ' ') }} €</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
