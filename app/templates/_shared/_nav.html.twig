@@ -43,8 +43,8 @@
                 </li>
             </ul>
 
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Rechercher">
+            <form class="d-flex" method="GET" action="{{ path('app_search') }}">
+                <input class="form-control me-2" type="search" name="search[keyword]" placeholder="Rechercher un produit...">
                 <button class="btn btn-outline-primary" type="submit">Rechercher</button>
             </form>
            {% set cartCount = cartHandler.cart|reduce((carry, item) => carry + item.quantity, 0) %}

@@ -2,24 +2,45 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
+use App\Form\SearchType;
+use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Entity\Product;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\HttpCache\ResponseCacheStrategy;
 
 final class ProductController extends AbstractController
 
 {
     #[Route('/', name: 'app_home')]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
-        $products = $productRepository->findAll();
+        $categoryId = $request->query->getInt('category') ?: null;
 
         return $this->render('home/index.html.twig', [
-            'products' => $products,
+            'products'          => $productRepository->findAllWithCategory($categoryId),
+            'categories'        => $categoryRepository->findBy([], ['name' => 'ASC']),
+            'currentCategoryId' => $categoryId,
+        ]);
+    }
+
+    #[Route('/search', name: 'app_search')]
+    public function search(Request $request, ProductRepository $productRepository): Response
+    {
+        $form = $this->createForm(SearchType::class);
+        $form->handleRequest($request);
+
+        $keyword = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $keyword = $form->get('keyword')->getData();
+        }
+
+        return $this->render('search/index.html.twig', [
+            'form'     => $form,
+            'products' => $productRepository->findByKeyword($keyword),
+            'keyword'  => $keyword,
         ]);
     }
 
