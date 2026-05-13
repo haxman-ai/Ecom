@@ -24,7 +24,7 @@ class OrderLine
     private ?Order $myOrder = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Product $product = null;
 
     public function getId(): ?int

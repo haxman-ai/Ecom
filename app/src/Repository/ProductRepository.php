@@ -16,28 +16,50 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Recherche LIKE insensible à la casse sur title, description et nom de catégorie.
+     * Sans mot-clé, retourne tous les produits.
+     *
+     * @return Product[]
+     */
+    public function findByKeyword(?string $keyword): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('c')
+            ->join('p.category', 'c')
+            ->orderBy('p.title', 'ASC');
 
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($keyword !== null && $keyword !== '') {
+            $pattern = '%' . $keyword . '%';
+            $qb->andWhere(
+                    $qb->expr()->orX(
+                        $qb->expr()->like('LOWER(p.title)', 'LOWER(:kw)'),
+                        $qb->expr()->like('LOWER(p.description)', 'LOWER(:kw)'),
+                        $qb->expr()->like('LOWER(c.name)', 'LOWER(:kw)')
+                    )
+                )
+                ->setParameter('kw', $pattern);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function findAllWithCategory(?int $categoryId): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('c')
+            ->join('p.category', 'c')
+            ->orderBy('c.name', 'ASC')
+            ->addOrderBy('p.title', 'ASC');
+
+        if ($categoryId !== null) {
+            $qb->andWhere('c.id = :categoryId')
+               ->setParameter('categoryId', $categoryId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
